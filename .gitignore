@@ -24,5 +24,3 @@ Homestead.yaml
 Homestead.json
 /.vagrant
 .phpunit.result.cache
-
-backend/.env.testing
