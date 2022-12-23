@@ -2,10 +2,11 @@ jobs:
   build:
     docker:
       - image: cimg/php:8.1-node
-    working_directory: /home/circleci/project/backend/
+    working_directory: /home/circleci/project/backend
 
     steps:
-      - checkout
+      - checkout:
+          path: /home/circleci/project/backend
       - run: pwd
       - run: ls
       - run: composer install -n --prefer-dist
