@@ -21,7 +21,9 @@ jobs:
 
       - name: Docker Compose Build and Up
         run: |
+          cp .env.template .env
           docker-compose build
           docker-compose up -d
+
       - name: Docker Compose Process
         run: docker-compose ps -a
