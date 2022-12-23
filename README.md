@@ -40,6 +40,7 @@ $ cp backend/.env.example backend/.env.testing
 **.env.testing**
 ```
 APP_ENV=testing
+APP_KEY=<<COPY A KEY FROM .ENV>>
 
 DB_CONNECTION=mysql
 DB_HOST=db-testing
