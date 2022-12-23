@@ -130,4 +130,8 @@ return [
     'sql' => [
         'enable' => env('LOG_SQL_ENABLE', false),
     ],
+    
+    'request' => [
+        'enable' => env('LOG_REQUEST_ENABLE', false),
+    ],
 ];
