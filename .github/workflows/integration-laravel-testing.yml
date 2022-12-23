@@ -89,4 +89,5 @@ jobs:
       - name: Laravel PHPUnit Testing
         run: |
           php artisan config:clear
+          npm run build
           php artisan test
