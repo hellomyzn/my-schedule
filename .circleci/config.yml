@@ -5,8 +5,8 @@ jobs:
     steps:
       - checkout
       - run: composer install -n --prefer-dist --working-dir=/home/circleci/project/backend
-      - run: npm ci --prefix /home/circleci/project/backend
-      - run: npm run dev --prefix /home/circleci/project/backend
+      # - run: npm ci --prefix /home/circleci/project/backend
+      # - run: npm run dev --prefix /home/circleci/project/backend
       - run:
           name: laravel test
           command: php artisan test
