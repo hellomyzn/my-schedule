@@ -75,7 +75,7 @@ return [
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
             'username' => 'Laravel Log',
             'emoji' => ':boom:',
-            'level' => env('LOG_LEVEL', 'critical'),
+            'level' => env('LOG_SLACK_LEVEL', 'critical'),
             'context' => false, // context部分を表示しない
         ],
 
@@ -130,7 +130,7 @@ return [
     'sql' => [
         'enable' => env('LOG_SQL_ENABLE', false),
     ],
-    
+
     'request' => [
         'enable' => env('LOG_REQUEST_ENABLE', false),
     ],
