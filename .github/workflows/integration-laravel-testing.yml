@@ -44,6 +44,11 @@ jobs:
         with:
           php-version: '8.1'
 
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16          
+
       - name: Ubuntu Version
         run: cat /etc/os-release
 
@@ -51,6 +56,11 @@ jobs:
         run: |
           php --version
           composer --version
+      
+      - name: Node Version
+        run: |
+          node --version
+          npm --version
 
       - name: Cache Composer dependencies
         uses: actions/cache@v2
