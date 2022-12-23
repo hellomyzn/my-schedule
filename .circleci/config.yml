@@ -5,10 +5,9 @@ jobs:
       - image: circleci/php:8-node-browsers-legacy
     steps:
       - checkout
-      - run: sudo composer self-update --1
       - run: composer install -n --prefer-dist
       - run: npm ci
       - run: npm run dev
       - run:
-          name: php test
-          command: vendor/bin/phpunit
+          name: laravel test
+          command: php artisan test
