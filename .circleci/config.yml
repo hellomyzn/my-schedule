@@ -7,6 +7,7 @@ jobs:
     steps:
       - checkout
       - run: pwd
+      - run: ls
       - run: composer install -n --prefer-dist
       - run: php artisan key:generate --env=testing
       - run: php artisan migrate:fresh --seed
