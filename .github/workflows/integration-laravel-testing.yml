@@ -1,6 +1,9 @@
 name: Laravel Testing
 
 on:
+  push:
+    paths:
+      - 'backend/*'
   pull_request:
     paths:
       - 'backend/*'

@@ -1,6 +1,9 @@
 name: Docker Testing
 
 on:
+  push:
+     paths:
+      - 'infra/*' 
   pull_request:
     paths:
       - 'infra/*'
