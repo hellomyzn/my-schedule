@@ -3,19 +3,13 @@ jobs:
     docker:
       - image: cimg/php:8.1-node
     steps:
-      - checkout
-      - run: 
-        working_directory: backend
-        command: composer install -n --prefer-dist
-      - run: 
-        working_directory: backend
-        command: php artisan key:generate --env=testing
-      - run:
-        working_directory: backend
-        command: php artisan migrate:fresh --seed
+      - checkout:
+          path: ~/spring-tutorial
+      - run: composer install -n --prefer-dist
+      - run: php artisan key:generate --env=testing
+      - run: php artisan migrate:fresh --seed
       # - run: npm ci --prefix /home/circleci/project/backend
       # - run: npm run dev --prefix /home/circleci/project/backend
       - run:
-          working_directory: backend
           name: laravel test
           command: php artisan test
