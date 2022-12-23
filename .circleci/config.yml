@@ -4,6 +4,7 @@ jobs:
       - image: cimg/php:8.1-node
     steps:
       - checkout
+      - run: cd /home/circleci/project/backend
       - run: composer install -n --prefer-dist --working-dir=/home/circleci/project/backend
       # - run: npm ci --prefix /home/circleci/project/backend
       # - run: npm run dev --prefix /home/circleci/project/backend
