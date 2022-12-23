@@ -3,6 +3,9 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+use App\Models\User;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,9 +17,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
 Route::get('/', function () {
+    $user = DB::transaction(function () {
+        $user = User::factory()->create();
+        $user->name = 'change name';
+        $user->save();
+        $user->delete();
+
+        return User::factory()->create();
+    });
+
+    User::find($user->id);
+
     return view('welcome');
 });
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
