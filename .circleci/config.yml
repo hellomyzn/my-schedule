@@ -2,9 +2,10 @@ jobs:
   build:
     docker:
       - image: cimg/php:8.1-node
+    working_directory: ~/backend
+
     steps:
-      - checkout:
-          path: ~/backend
+      - checkout
       - run: composer install -n --prefer-dist
       - run: php artisan key:generate --env=testing
       - run: php artisan migrate:fresh --seed
