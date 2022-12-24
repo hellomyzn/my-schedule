@@ -27,6 +27,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -57,5 +58,11 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+    ];
+
+    const ROLES = [
+        "ADMIN" => 1, 
+        "MANAGER" => 5, 
+        "USER" => 9,
     ];
 }

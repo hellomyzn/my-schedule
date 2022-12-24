@@ -20,12 +20,8 @@ Route::get('/', function () {
 Route::fallback(function(){ //存在しないURLは自動的にTOPにリダイレクトさせる。
     return redirect(route('welcome')); 
 });
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified'
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-});
+
+require __DIR__.'/auth.php';
+require __DIR__.'/admins/web.php';
+require __DIR__.'/managers/web.php';
+require __DIR__.'/users/web.php';
