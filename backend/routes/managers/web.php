@@ -2,10 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\EventController;
+
+
 Route::prefix('manager')
     ->middleware(['can:manager-higher'])
+    ->name('managers.')
+    ->controller(EventController::class)
     ->group(function(){
-        Route::get('index', function() {
-            dd('manager');
-        });
+        Route::resource('events', EventController::class);
 });
