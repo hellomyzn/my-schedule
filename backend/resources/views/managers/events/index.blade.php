@@ -32,7 +32,7 @@
                           <tbody>
                             @foreach ($events as $event)
                                 <tr>
-                                    <td class="px-4 py-3">{{ $event->name }}</td>
+                                    <td class="px-4 py-3 text-blue-500"><a href={{ route('managers.events.show', $event->id) }}>{{ $event->name }}</a></td>
                                     <td class="px-4 py-3">{{ $event->start_date }}</td>
                                     <td class="px-4 py-3">{{ $event->end_date }}</td>
                                     <td class="px-4 py-3">人程</td>

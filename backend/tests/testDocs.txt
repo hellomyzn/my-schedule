@@ -7,3 +7,4 @@ Event
 - Create page 表示するもの
 - Store: validation, success, duplicated check
 - Service のメソッドのテスト
+- Repository のてすと
