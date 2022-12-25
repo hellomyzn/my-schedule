@@ -3,12 +3,34 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
+use App\Services\EventService;
+
 
 class EventController extends Controller
-{
+{    
+    /**
+     * eventService
+     *
+     * @var EventService
+     */
+    protected $eventService;
+    
+    /**
+     * __construct
+     *
+     * @param  EventService
+     * @return void
+     */
+    public function __construct(EventService $eventService)
+    {
+        $this->eventService = $eventService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -42,7 +64,23 @@ class EventController extends Controller
      */
     public function store(StoreEventRequest $request)
     {
-        //
+        $check = EventService::checkEventDuplication(
+            $request['event_date'],
+            $request['start_time'],
+            $request['end_time']
+        );
+
+        if($check){
+            session()->flash('status', 'この時間帯はすでに他の予約が存在します');
+            return to_route('managers.events.create');
+        }
+        
+        $event = $this->eventService->create($request);
+
+        session()->flash('status', 'イベントが登録されました');
+
+        return to_route('managers.events.index');
+
     }
 
     /**
@@ -53,7 +91,18 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        //
+        $event = Event::findOrFail($event->id);
+        $eventDate = $event->eventDate;
+        $startTime = $event->startTime;
+        $endTime = $event->endTime;
+        
+        return view('managers.events.show', 
+            compact([
+                'event',
+                'eventDate',
+                'startTime',
+                'endTime'
+            ]));
     }
 
     /**
