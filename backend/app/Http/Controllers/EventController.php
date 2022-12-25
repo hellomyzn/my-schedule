@@ -3,13 +3,34 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
-use Carbon\Carbon;
+use App\Services\EventService;
+
 
 class EventController extends Controller
-{
+{    
+    /**
+     * eventService
+     *
+     * @var EventService
+     */
+    protected $eventService;
+    
+    /**
+     * __construct
+     *
+     * @param  EventService
+     * @return void
+     */
+    public function __construct(EventService $eventService)
+    {
+        $this->eventService = $eventService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -43,30 +64,18 @@ class EventController extends Controller
      */
     public function store(StoreEventRequest $request)
     {
-        $check = DB::table('events')
-            ->whereDate('start_date', $request['event_date'])
-            ->whereTime('end_date', '>', $request['start_time'])
-            ->whereTime('start_date', '<', $request['end_time'])
-            ->exists();
+        $check = EventService::checkEventDuplication(
+            $request['event_date'],
+            $request['start_time'],
+            $request['end_time']
+        );
 
         if($check){
             session()->flash('status', 'この時間帯はすでに他の予約が存在します');
             return to_route('managers.events.create');
         }
-        $start = $request['event_date'] . " " . $request['start_time'];
-        $startDate = Carbon::createFromFormat('Y-m-d H:i', $start);
         
-        $end = $request['event_date'] . " " . $request['end_time'];
-        $endDate = Carbon::createFromFormat('Y-m-d H:i', $end);
-        
-        $event = Event::create([
-            'name' => $request['event_name'],
-            'information' => $request['information'],
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'max_people' => $request['max_people'],
-            'is_visible' => $request['is_visible'],
-        ]);
+        $event = $this->eventService->create($request);
 
         session()->flash('status', 'イベントが登録されました');
 
