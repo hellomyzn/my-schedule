@@ -1,3 +1,8 @@
 ユーザーロール
 - ユーザーのアクセス権限
 - 表示項目の違い
+
+Event
+- Index page 表示するもの
+- Create page 表示するもの
+- Store: validation, success

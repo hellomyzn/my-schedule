@@ -53,7 +53,7 @@
                             </div>
                             <div class="flex space-x-4 justify-around">
                                 <input type="radio" name="is_visible" value="1" checked> 表示
-                                <input type="radio" name="is_visible" value="0" checked> 非表示
+                                <input type="radio" name="is_visible" value="0" > 非表示
                             </div>
                             <x-jet-button class="ml-4">
                                 新規登録
