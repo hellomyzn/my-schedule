@@ -1,3 +1,15 @@
 ユーザーロール
 - ユーザーのアクセス権限
 - 表示項目の違い
+
+Event
+- Index page 表示するもの
+- Create page 表示するもの
+- Store: validation, success, duplicated check
+- Update: validation, success, duplicated check if there is event exsist
+- Show page
+- Service のメソッドのテスト
+- Repository のてすと
+- 過去の情報のイベント
+- 過去のものだったら編集するボタンを表示しない
+- 過去のイベントの編集ページにはアクセスできない
