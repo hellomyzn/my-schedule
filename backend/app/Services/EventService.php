@@ -4,11 +4,13 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator ;
 use Carbon\Carbon;
 
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Repositories\Interfaces\EventRepositoryInterface;
+use App\Repositories\Interfaces\ReservationRepositoryInterface;
 use App\Models\Event;
 
 
@@ -23,14 +25,26 @@ class EventService
     protected $eventRepo;
     
     /**
+     * reservationRepo
+     *
+     * @var ReservationRepositoryInterface
+     */
+    protected $reservationRepo;
+
+    /**
      * __construct
      *
      * @param  EventRepositoryInterface
+     * @param  ReservationRepositoryInterface
      * @return void
      */
-    public function __construct(EventRepositoryInterface $eventRepository)
+    public function __construct(
+        EventRepositoryInterface $eventRepository,
+        ReservationRepositoryInterface $reservationRepo
+    )
     {  
         $this->eventRepo = $eventRepository;
+        $this->reservationRepo = $reservationRepo;
     }
 
     /**
@@ -70,7 +84,6 @@ class EventService
         
         return $duplicatedEventNumber;
     }
-
     
     /**
      * joinDateAndTime
@@ -85,6 +98,19 @@ class EventService
         $dateAndTimeFormated = Carbon::createFromFormat('Y-m-d H:i', $dateAndTime);
         
         return $dateAndTimeFormated;
+    }
+    
+    /**
+     * getFutureEvents
+     *
+     * @return LengthAwarePaginator
+     */
+    public function getFutureEvents(): LengthAwarePaginator
+    {
+        $reservedPeople = $this->reservationRepo->getReservedPeople();
+        $events = $this->eventRepo->getFutureEvents($reservedPeople);
+
+        return $events;
     }
 
     /**

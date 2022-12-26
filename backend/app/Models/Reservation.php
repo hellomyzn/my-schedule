@@ -13,5 +13,5 @@ class Reservation extends Model
         'user_id',
         'event_id',
         'number_of_people'
-    ]
+    ];
 }

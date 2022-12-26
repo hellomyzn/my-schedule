@@ -3,10 +3,14 @@
 namespace App\Repositories\Events;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Pagination\LengthAwarePaginator ;
 use Carbon\Carbon;
+
 
 use App\Models\Event;
 use App\Repositories\Interfaces\EventRepositoryInterface;
+use App\Repositories\Interfaces\ReservationRepositoryInterface;
 
 class EventMysqlRepository implements EventRepositoryInterface
 {
@@ -46,15 +50,19 @@ class EventMysqlRepository implements EventRepositoryInterface
     }
     
     /**
-     * getAllOrderByStartDateAsc
+     * getFutureEvents
      *
-     * @return object
+     * @param  mixed $reservedPeople
+     * @return LengthAwarePaginator
      */
-    public function getFutureEvents(): object
+    public function getFutureEvents(Builder $reservedPeople): LengthAwarePaginator
     {
         try {
             $today = Carbon::today();
             $events = DB::table('events')
+                ->leftJoinSub($reservedPeople, 'reservedPeople', function($join){
+                    $join->on('events.id', '=', 'reservedPeople.event_id');
+                })
                 ->whereDate('start_date', '>', $today)
                 ->orderBy('start_date', 'asc')
                 ->paginate(10);
@@ -73,9 +81,9 @@ class EventMysqlRepository implements EventRepositoryInterface
     /**
      * getPastEvents
      *
-     * @return object
+     * @return LengthAwarePaginator
      */
-    public function getPastEvents(): object
+    public function getPastEvents(): LengthAwarePaginator
     {
         try {
             $today = Carbon::today();
