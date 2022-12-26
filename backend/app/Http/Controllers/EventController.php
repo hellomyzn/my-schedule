@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
@@ -98,6 +100,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
+        $today = Carbon::today()->format('Y年m月d日');
         $event = $this->eventRepo->getById($event->id);
         $eventDate = $event->eventDate;
         $startTime = $event->startTime;
@@ -108,7 +111,8 @@ class EventController extends Controller
                 'event',
                 'eventDate',
                 'startTime',
-                'endTime'
+                'endTime',
+                'today'
             ]));
     }
 

@@ -57,9 +57,11 @@
                                     非表示
                                 @endif
                             </div>
-                            <x-jet-button class="ml-4">
-                                編集する
-                            </x-jet-button>
+                            @if($event->eventDate >= $today)
+                                <x-jet-button class="ml-4">
+                                    編集する
+                                </x-jet-button>
+                            @endif
                         </div>
                     </form>
                 </div>
