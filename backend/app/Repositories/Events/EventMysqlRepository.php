@@ -21,7 +21,52 @@ class EventMysqlRepository implements EventRepositoryInterface
     {
         $this->model = $event;
     }
-        
+            
+    /**
+     * getById
+     *
+     * @param  int $id
+     * @return Event
+     */
+    public function getById(int $id): Event
+    {
+        try {
+                $event = $this->model->findOrFail($id);
+
+                return $event;
+        } catch(Exceptions $e) {
+            \Log::error(__METHOD__.'@'.$e->getLine().': '.$e->getMessage());
+
+            return [
+                'msg' => $e->getMessage(),
+                'err' => false,
+            ];
+        }
+    }
+    
+    /**
+     * getAll
+     *
+     * @return object
+     */
+    public function getAllOrderByStartDateAsc(): object
+    {
+        try {
+            $events = DB::table('events')
+                ->orderBy('start_date', 'asc')
+                ->paginate(10);
+
+            return $events;
+        } catch(Exceptions $e) {
+            \Log::error(__METHOD__.'@'.$e->getLine().': '.$e->getMessage());
+
+            return [
+                'msg' => $e->getMessage(),
+                'err' => false,
+            ];
+        }
+    }
+
     /**
      * create
      *
@@ -38,7 +83,7 @@ class EventMysqlRepository implements EventRepositoryInterface
             });
         } catch(Exceptions $e) {
             \Log::error(__METHOD__.'@'.$e->getLine().': '.$e->getMessage());
-            dd('hoge');
+
             return [
                 'msg' => $e->getMessage(),
                 'err' => false,

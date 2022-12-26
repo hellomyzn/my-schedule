@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
 
 use App\Http\Requests\StoreEventRequest;
@@ -57,7 +58,7 @@ class EventService
         
         return $dateAndTimeFormated;
     }
-    
+
     /**
      * create
      *
