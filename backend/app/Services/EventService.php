@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
 
 use App\Http\Requests\StoreEventRequest;
+use App\Http\Requests\UpdateEventRequest;
 use App\Repositories\Interfaces\EventRepositoryInterface;
 use App\Models\Event;
 
@@ -87,6 +88,38 @@ class EventService
         ];
         
         $event = $this->eventRepo->create($requestData);
+
+        return $event;
+    }
+    
+    /**
+     * update
+     *
+     * @param  UpdateEventRequest
+     * @return Event
+     */
+    public function update(UpdateEventRequest $request, int $id): Event
+    {
+        $startDate = EventService::joinDateAndTime(
+            $request['event_date'],
+            $request['start_time']
+        );
+        
+        $endDate = EventService::joinDateAndTime(
+            $request['event_date'],
+            $request['end_time']
+        );
+        
+        $requestData = [
+            'name' => $request['event_name'],
+            'information' => $request['information'],
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'max_people' => $request['max_people'],
+            'is_visible' => $request['is_visible'],
+        ];
+        
+        $event = $this->eventRepo->update($requestData, $id);
 
         return $event;
     }

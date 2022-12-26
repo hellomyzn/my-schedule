@@ -122,7 +122,18 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
-        //
+        $event = $this->eventRepo->getById($event->id);
+        $eventDate = $event->eventDate;
+        $startTime = $event->startTime;
+        $endTime = $event->endTime;
+        
+        return view('managers.events.edit', 
+            compact([
+                'event',
+                'eventDate',
+                'startTime',
+                'endTime'
+            ]));
     }
 
     /**
@@ -134,7 +145,22 @@ class EventController extends Controller
      */
     public function update(UpdateEventRequest $request, Event $event)
     {
-        //
+        $check = EventService::checkEventDuplication(
+            $request['event_date'],
+            $request['start_time'],
+            $request['end_time']
+        );
+
+        if($check){
+            session()->flash('status', 'この時間帯はすでに他の予約が存在します');
+            return to_route('managers.events.edit');
+        }
+
+        $event = $this->eventService->update($request, $event->id);
+
+        session()->flash('status', 'イベントを更新しました');
+
+        return to_route('managers.events.index');
     }
 
     /**

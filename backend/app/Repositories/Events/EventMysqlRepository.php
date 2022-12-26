@@ -90,4 +90,29 @@ class EventMysqlRepository implements EventRepositoryInterface
             ];
         }
     }
+
+    public function update(array $requestData, int $id): Event
+    {
+        try {
+            return DB::transaction(function () use($requestData) {
+                $event = $this->getById($id);
+                $event->name = $requestData['name'];
+                $event->information = $requestData['information'];
+                $event->start_date = $requestData['start_date'];
+                $event->end_date = $requestData['end_date'];
+                $event->max_people = $requestData['max_people'];
+                $event->is_visible = $requestData['is_visible'];
+                $event->save();
+
+                return $event;
+            });
+        } catch(Exceptions $e) {
+            \Log::error(__METHOD__.'@'.$e->getLine().': '.$e->getMessage());
+
+            return [
+                'msg' => $e->getMessage(),
+                'err' => false,
+            ];
+        }
+    }
 }
