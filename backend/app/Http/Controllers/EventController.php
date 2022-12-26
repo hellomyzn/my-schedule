@@ -53,8 +53,7 @@ class EventController extends Controller
     {
         $events = $this->eventService->getFutureEvents();
         
-        return view('managers.events.index', 
-                    compact('events'));
+        return view('managers.events.index', compact('events'));
     }
 
     /**
@@ -186,7 +185,7 @@ class EventController extends Controller
      */
     public function past()
     {
-        $events = $this->eventRepo->getPastEvents();
+        $events = $this->eventService->getPastEvents();
         return view('managers.events.past', compact('events'));
     }
 }

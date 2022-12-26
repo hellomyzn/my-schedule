@@ -83,11 +83,14 @@ class EventMysqlRepository implements EventRepositoryInterface
      *
      * @return LengthAwarePaginator
      */
-    public function getPastEvents(): LengthAwarePaginator
+    public function getPastEvents(Builder $reservedPeople): LengthAwarePaginator
     {
         try {
             $today = Carbon::today();
             $events = DB::table('events')
+                ->leftJoinSub($reservedPeople, 'reservedPeople', function($join){
+                    $join->on('events.id', '=', 'reservedPeople.event_id');
+                })
                 ->whereDate('start_date', '<', $today)
                 ->orderBy('start_date', 'desc')
                 ->paginate(10);

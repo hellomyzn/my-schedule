@@ -113,6 +113,14 @@ class EventService
         return $events;
     }
 
+    public function getPastEvents(): LengthAwarePaginator
+    {
+        $reservedPeople = $this->reservationRepo->getReservedPeople();
+        $events = $this->eventRepo->getPastEvents($reservedPeople);
+
+        return $events;
+    }
+
     /**
      * create
      *
