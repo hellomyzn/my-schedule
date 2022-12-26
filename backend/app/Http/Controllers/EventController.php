@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
 use App\Services\EventService;
+use App\Repositories\Interfaces\EventRepositoryInterface;
 
 
 class EventController extends Controller
@@ -19,6 +19,13 @@ class EventController extends Controller
      * @var EventService
      */
     protected $eventService;
+        
+    /**
+     * eventRepo
+     *
+     * @var EventRepositoryInterface
+     */
+    protected $eventRepo;
     
     /**
      * __construct
@@ -26,9 +33,13 @@ class EventController extends Controller
      * @param  EventService
      * @return void
      */
-    public function __construct(EventService $eventService)
+    public function __construct(
+        EventService $eventService,
+        EventRepositoryInterface $eventRepository
+    )
     {
         $this->eventService = $eventService;
+        $this->eventRepo = $eventRepository;
     }
 
     /**
@@ -38,9 +49,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = DB::table('events')
-            ->orderBy('start_date', 'asc')
-            ->paginate(10);
+        $events = $this->eventRepo->getAllOrderByStartDateAsc();
 
         return view('managers.events.index', 
                     compact('events'));
@@ -91,7 +100,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        $event = Event::findOrFail($event->id);
+        $event = $this->eventRepo->getById($event->id);
         $eventDate = $event->eventDate;
         $startTime = $event->startTime;
         $endTime = $event->endTime;
@@ -113,7 +122,20 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
-        //
+        $event = $this->eventRepo->getById($event->id);
+
+        #reformat from Japanese to Y-m-d. It's for UpdateEventRequest validation.
+        $eventDate = $event->editEventDate;
+        $startTime = $event->startTime;
+        $endTime = $event->endTime;
+        
+        return view('managers.events.edit', 
+            compact([
+                'event',
+                'eventDate',
+                'startTime',
+                'endTime'
+            ]));
     }
 
     /**
@@ -125,7 +147,22 @@ class EventController extends Controller
      */
     public function update(UpdateEventRequest $request, Event $event)
     {
-        //
+        $duplicatedEventNumber = EventService::countEventDuplication(
+            $request['event_date'],
+            $request['start_time'],
+            $request['end_time']
+        );
+
+        if($duplicatedEventNumber > 1){
+            session()->flash('status', 'この時間帯はすでに他の予約が存在します');
+            return to_route('managers.events.edit', $event->id);
+        }
+
+        $event = $this->eventService->update($request, $event->id);
+
+        session()->flash('status', 'イベントを更新しました');
+
+        return to_route('managers.events.index');
     }
 
     /**
