@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
-
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
@@ -49,7 +47,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = $this->eventRepo->getAllOrderByStartDateAsc();
+        $events = $this->eventRepo->getFutureEvents();
 
         return view('managers.events.index', 
                     compact('events'));
@@ -174,5 +172,15 @@ class EventController extends Controller
     public function destroy(Event $event)
     {
         //
+    }
+    
+    /**
+     * past
+     * @return \Illuminate\Http\Response
+     */
+    public function past()
+    {
+        $events = $this->eventRepo->getPastEvents();
+        return view('managers.events.past', compact('events'));
     }
 }

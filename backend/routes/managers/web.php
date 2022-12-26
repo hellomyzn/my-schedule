@@ -8,7 +8,13 @@ use App\Http\Controllers\EventController;
 Route::prefix('manager')
     ->middleware(['can:manager-higher'])
     ->name('managers.')
-    ->controller(EventController::class)
     ->group(function(){
-        Route::resource('events', EventController::class);
+        Route::prefix('events')
+        ->name('events.')
+        ->controller(EventController::class)
+        ->group(function(){
+            Route::get('past', 'past')->name('past');
+    });
+
+    Route::resource('events', EventController::class);
 });
