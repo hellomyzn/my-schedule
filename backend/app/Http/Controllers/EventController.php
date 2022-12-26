@@ -123,7 +123,9 @@ class EventController extends Controller
     public function edit(Event $event)
     {
         $event = $this->eventRepo->getById($event->id);
-        $eventDate = $event->eventDate;
+
+        #reformat from Japanese to Y-m-d. It's for UpdateEventRequest validation.
+        $eventDate = $event->editEventDate;
         $startTime = $event->startTime;
         $endTime = $event->endTime;
         
@@ -145,15 +147,15 @@ class EventController extends Controller
      */
     public function update(UpdateEventRequest $request, Event $event)
     {
-        $check = EventService::checkEventDuplication(
+        $duplicatedEventNumber = EventService::countEventDuplication(
             $request['event_date'],
             $request['start_time'],
             $request['end_time']
         );
 
-        if($check){
+        if($duplicatedEventNumber > 1){
             session()->flash('status', 'この時間帯はすでに他の予約が存在します');
-            return to_route('managers.events.edit');
+            return to_route('managers.events.edit', $event->id);
         }
 
         $event = $this->eventService->update($request, $event->id);

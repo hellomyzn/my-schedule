@@ -43,14 +43,15 @@ class Event extends Model
     }
     
     /**
-     * eventDate
-     *
+     * editEventDate
+     * This is for avoiding UpdateEventRequest validation.
+     * 
      * @return Attribute
      */
     protected function editEventDate(): Attribute
     {
         return new Attribute(
-            get: fn() => Carbon::parse($this->start_date)->format('Y年m月d日')
+            get: fn() => Carbon::parse($this->start_date)->format('Y-m-d')
         );
     }
     

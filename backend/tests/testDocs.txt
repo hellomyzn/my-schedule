@@ -6,6 +6,7 @@ Event
 - Index page 表示するもの
 - Create page 表示するもの
 - Store: validation, success, duplicated check
+- Update: validation, success, duplicated check if there is event exsist
 - Show page
 - Service のメソッドのテスト
 - Repository のてすと

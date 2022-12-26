@@ -36,10 +36,10 @@ class EventService
     /**
      * checkEventDuplication
      *
-     * @param  mixed $eventDate
-     * @param  mixed $start_date
-     * @param  mixed $end_date
-     * @return void
+     * @param  string $eventDate
+     * @param  string $start_date
+     * @param  string $end_date
+     * @return bool
      */
     public static function checkEventDuplication(string $eventDate, string $startTime, string $endTime): bool
     {
@@ -51,7 +51,34 @@ class EventService
         
         return $check;
     }
+    
+    /**
+     * countEventDuplication
+     *
+     * @param  string $eventDate
+     * @param  string $startTime
+     * @param  string $endTime
+     * @return int
+     */
+    public static function countEventDuplication(string $eventDate, string $startTime, string $endTime): int
+    {
+        $duplicatedEventNumber = DB::table('events')
+        ->whereDate('start_date', $eventDate)
+        ->whereTime('end_date', '>', $startTime)
+        ->whereTime('start_date', '<', $endTime)
+        ->count();
+        
+        return $duplicatedEventNumber;
+    }
 
+    
+    /**
+     * joinDateAndTime
+     *
+     * @param  string $date
+     * @param  string $time
+     * @return Carbon
+     */
     public static function joinDateAndTime(string $date, string $time): Carbon
     {   
         $dateAndTime = $date . " " . $time;

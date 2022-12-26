@@ -90,11 +90,18 @@ class EventMysqlRepository implements EventRepositoryInterface
             ];
         }
     }
-
+    
+    /**
+     * update
+     *
+     * @param  array $requestData
+     * @param  int $id
+     * @return Event
+     */
     public function update(array $requestData, int $id): Event
     {
         try {
-            return DB::transaction(function () use($requestData) {
+            return DB::transaction(function () use($requestData, $id) {
                 $event = $this->getById($id);
                 $event->name = $requestData['name'];
                 $event->information = $requestData['information'];
