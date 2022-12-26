@@ -3,6 +3,7 @@
 namespace App\Repositories\Events;
 
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 use App\Models\Event;
 use App\Repositories\Interfaces\EventRepositoryInterface;
@@ -45,15 +46,42 @@ class EventMysqlRepository implements EventRepositoryInterface
     }
     
     /**
-     * getAll
+     * getAllOrderByStartDateAsc
      *
      * @return object
      */
-    public function getAllOrderByStartDateAsc(): object
+    public function getFutureEvents(): object
     {
         try {
+            $today = Carbon::today();
             $events = DB::table('events')
+                ->whereDate('start_date', '>', $today)
                 ->orderBy('start_date', 'asc')
+                ->paginate(10);
+
+            return $events;
+        } catch(Exceptions $e) {
+            \Log::error(__METHOD__.'@'.$e->getLine().': '.$e->getMessage());
+
+            return [
+                'msg' => $e->getMessage(),
+                'err' => false,
+            ];
+        }
+    }
+        
+    /**
+     * getPastEvents
+     *
+     * @return object
+     */
+    public function getPastEvents(): object
+    {
+        try {
+            $today = Carbon::today();
+            $events = DB::table('events')
+                ->whereDate('start_date', '<', $today)
+                ->orderBy('start_date', 'desc')
                 ->paginate(10);
 
             return $events;

@@ -49,7 +49,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = $this->eventRepo->getAllOrderByStartDateAsc();
+        $events = $this->eventRepo->getFutureEvents();
 
         return view('managers.events.index', 
                     compact('events'));
@@ -100,6 +100,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
+        $today = Carbon::today()->format('Y年m月d日');
         $event = $this->eventRepo->getById($event->id);
         $eventDate = $event->eventDate;
         $startTime = $event->startTime;
@@ -110,7 +111,8 @@ class EventController extends Controller
                 'event',
                 'eventDate',
                 'startTime',
-                'endTime'
+                'endTime',
+                'today'
             ]));
     }
 
@@ -174,5 +176,15 @@ class EventController extends Controller
     public function destroy(Event $event)
     {
         //
+    }
+    
+    /**
+     * past
+     * @return \Illuminate\Http\Response
+     */
+    public function past()
+    {
+        $events = $this->eventRepo->getPastEvents();
+        return view('managers.events.past', compact('events'));
     }
 }
