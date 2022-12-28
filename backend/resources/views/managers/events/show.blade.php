@@ -72,8 +72,12 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="max-w-2xl py-4 mx-auto">
-                    @if( !$users->isEmpty() )
+                    @if( !$reservedUsers->isEmpty() )
                         予約状況
+                        @foreach ($reservations as $reservation)
+                            {{ $reservation['name'] }}
+                            {{ $reservation['number_of_people'] }}
+                        @endforeach
                     @endif
                 </div>
             </div>

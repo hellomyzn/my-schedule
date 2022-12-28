@@ -51,7 +51,7 @@ class EventMysqlRepository implements EventRepositoryInterface
         }
     }
 
-    public function getEventUsers(int $id): Collection
+    public function getReservedUsers(int $id): Collection
     {
         try {
             $event = $this->model->findOrFail($id);

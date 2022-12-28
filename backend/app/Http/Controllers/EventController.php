@@ -8,6 +8,7 @@ use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
 use App\Services\EventService;
+use App\Services\ReservationService;
 use App\Repositories\Interfaces\EventRepositoryInterface;
 use App\Repositories\Interfaces\ReservationRepositoryInterface;
 
@@ -101,19 +102,21 @@ class EventController extends Controller
     {
         $today = Carbon::today()->format('Y年m月d日');
         $event = $this->eventRepo->getById($event->id);
+        $reservedUsers = $this->eventRepo->getReservedUsers($event->id);
+        $reservations = ReservationService::createReservationArrayByUsers($reservedUsers);
         $eventDate = $event->eventDate;
         $startTime = $event->startTime;
         $endTime = $event->endTime;
-        $users = $this->eventRepo->getEventUsers($event->id);
         
         return view('managers.events.show', 
             compact([
                 'event',
+                'reservedUsers',
+                'reservations',
                 'eventDate',
                 'startTime',
                 'endTime',
-                'today',
-                'users'
+                'today'
             ]));
     }
 
