@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\Interfaces\EventRepositoryInterface;
+use App\Repositories\Interfaces\ReservationRepositoryInterface;
 use App\Repositories\Events\EventMysqlRepository;
+use App\Repositories\Reservations\ReservationsMysqlRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -16,6 +18,7 @@ class RepositoryServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(EventRepositoryInterface::class, EventMysqlRepository::class);
+        $this->app->bind(ReservationRepositoryInterface::class, ReservationsMysqlRepository::class);
     }
 
     /**

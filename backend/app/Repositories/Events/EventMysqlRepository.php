@@ -3,10 +3,16 @@
 namespace App\Repositories\Events;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Query\Builder;
 use Carbon\Carbon;
 
+
 use App\Models\Event;
+use Illuminate\Database\Eloquent\Model;
+
 use App\Repositories\Interfaces\EventRepositoryInterface;
+use App\Repositories\Interfaces\ReservationRepositoryInterface;
 
 class EventMysqlRepository implements EventRepositoryInterface
 {
@@ -27,9 +33,9 @@ class EventMysqlRepository implements EventRepositoryInterface
      * getById
      *
      * @param  int $id
-     * @return Event
+     * @return Model
      */
-    public function getById(int $id): Event
+    public function getById(int $id): Model
     {
         try {
                 $event = $this->model->findOrFail($id);
@@ -44,20 +50,41 @@ class EventMysqlRepository implements EventRepositoryInterface
             ];
         }
     }
+
+    public function getReservedUsers(int $id): Collection
+    {
+        try {
+            $event = $this->model->findOrFail($id);
+            $users = $event->users;
+
+            return $users;
+        } catch(Exceptions $e) {
+            \Log::error(__METHOD__.'@'.$e->getLine().': '.$e->getMessage());
+
+            return [
+                'msg' => $e->getMessage(),
+                'err' => false,
+            ];
+        }        
+    }
     
     /**
-     * getAllOrderByStartDateAsc
+     * getFutureEvents
      *
-     * @return object
+     * @param  mixed $reservedPeople
+     * @return Collection
      */
-    public function getFutureEvents(): object
+    public function getFutureEvents(Builder $reservedPeople): Collection
     {
         try {
             $today = Carbon::today();
             $events = DB::table('events')
+                ->leftJoinSub($reservedPeople, 'reservedPeople', function($join){
+                    $join->on('events.id', '=', 'reservedPeople.event_id');
+                })
                 ->whereDate('start_date', '>', $today)
                 ->orderBy('start_date', 'asc')
-                ->paginate(10);
+                ->get();
 
             return $events;
         } catch(Exceptions $e) {
@@ -73,16 +100,19 @@ class EventMysqlRepository implements EventRepositoryInterface
     /**
      * getPastEvents
      *
-     * @return object
+     * @return Collection
      */
-    public function getPastEvents(): object
+    public function getPastEvents(Builder $reservedPeople): Collection
     {
         try {
             $today = Carbon::today();
             $events = DB::table('events')
+                ->leftJoinSub($reservedPeople, 'reservedPeople', function($join){
+                    $join->on('events.id', '=', 'reservedPeople.event_id');
+                })
                 ->whereDate('start_date', '<', $today)
                 ->orderBy('start_date', 'desc')
-                ->paginate(10);
+                ->get();
 
             return $events;
         } catch(Exceptions $e) {
@@ -99,9 +129,9 @@ class EventMysqlRepository implements EventRepositoryInterface
      * create
      *
      * @param  array $requestData
-     * @return Event
+     * @return Model
      */
-    public function create(array $requestData): Event
+    public function create(array $requestData): Model
     {
         try {
             return DB::transaction(function () use ($requestData) {
@@ -124,9 +154,9 @@ class EventMysqlRepository implements EventRepositoryInterface
      *
      * @param  array $requestData
      * @param  int $id
-     * @return Event
+     * @return Model
      */
-    public function update(array $requestData, int $id): Event
+    public function update(array $requestData, int $id): Model
     {
         try {
             return DB::transaction(function () use($requestData, $id) {
