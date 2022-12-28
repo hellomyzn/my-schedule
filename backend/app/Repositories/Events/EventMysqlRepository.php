@@ -9,7 +9,8 @@ use Carbon\Carbon;
 
 
 use App\Models\Event;
-use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
+
 use App\Repositories\Interfaces\EventRepositoryInterface;
 use App\Repositories\Interfaces\ReservationRepositoryInterface;
 
@@ -32,9 +33,9 @@ class EventMysqlRepository implements EventRepositoryInterface
      * getById
      *
      * @param  int $id
-     * @return Event
+     * @return Model
      */
-    public function getById(int $id): Event
+    public function getById(int $id): Model
     {
         try {
                 $event = $this->model->findOrFail($id);
@@ -50,7 +51,7 @@ class EventMysqlRepository implements EventRepositoryInterface
         }
     }
 
-    public function getEventUsers(int $id): User
+    public function getEventUsers(int $id): Collection
     {
         try {
             $event = $this->model->findOrFail($id);
@@ -128,9 +129,9 @@ class EventMysqlRepository implements EventRepositoryInterface
      * create
      *
      * @param  array $requestData
-     * @return Event
+     * @return Model
      */
-    public function create(array $requestData): Event
+    public function create(array $requestData): Model
     {
         try {
             return DB::transaction(function () use ($requestData) {
@@ -153,9 +154,9 @@ class EventMysqlRepository implements EventRepositoryInterface
      *
      * @param  array $requestData
      * @param  int $id
-     * @return Event
+     * @return Model
      */
-    public function update(array $requestData, int $id): Event
+    public function update(array $requestData, int $id): Model
     {
         try {
             return DB::transaction(function () use($requestData, $id) {

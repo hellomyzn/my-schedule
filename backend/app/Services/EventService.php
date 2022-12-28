@@ -125,8 +125,10 @@ class EventService
     {
         $reservedPeople = $this->reservationRepo->getReservedPeople();
         $events = $this->eventRepo->getPastEvents($reservedPeople);
+        $showPerPage = 10;
+        $paginatedEvents = paginateFromCollection($events, $showPerPage);
 
-        return $events;
+        return $paginatedEvents;
     }
 
     /**
