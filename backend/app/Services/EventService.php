@@ -3,8 +3,9 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator ;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 use Carbon\Carbon;
 
 use App\Http\Requests\StoreEventRequest;
@@ -109,10 +110,17 @@ class EventService
     {
         $reservedPeople = $this->reservationRepo->getReservedPeople();
         $events = $this->eventRepo->getFutureEvents($reservedPeople);
+        $showPerPage = 10;
+        $paginatedEvents = paginateFromCollection($events, $showPerPage);
 
-        return $events;
+        return $paginatedEvents;
     }
-
+    
+    /**
+     * getPastEvents
+     *
+     * @return LengthAwarePaginator
+     */
     public function getPastEvents(): LengthAwarePaginator
     {
         $reservedPeople = $this->reservationRepo->getReservedPeople();

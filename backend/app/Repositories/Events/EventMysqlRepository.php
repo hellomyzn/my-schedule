@@ -3,12 +3,13 @@
 namespace App\Repositories\Events;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Pagination\LengthAwarePaginator ;
 use Carbon\Carbon;
 
 
 use App\Models\Event;
+use App\Models\User;
 use App\Repositories\Interfaces\EventRepositoryInterface;
 use App\Repositories\Interfaces\ReservationRepositoryInterface;
 
@@ -48,14 +49,31 @@ class EventMysqlRepository implements EventRepositoryInterface
             ];
         }
     }
+
+    public function getEventUsers(int $id): User
+    {
+        try {
+            $event = $this->model->findOrFail($id);
+            $users = $event->users;
+
+            return $users;
+        } catch(Exceptions $e) {
+            \Log::error(__METHOD__.'@'.$e->getLine().': '.$e->getMessage());
+
+            return [
+                'msg' => $e->getMessage(),
+                'err' => false,
+            ];
+        }        
+    }
     
     /**
      * getFutureEvents
      *
      * @param  mixed $reservedPeople
-     * @return LengthAwarePaginator
+     * @return Collection
      */
-    public function getFutureEvents(Builder $reservedPeople): LengthAwarePaginator
+    public function getFutureEvents(Builder $reservedPeople): Collection
     {
         try {
             $today = Carbon::today();
@@ -65,7 +83,7 @@ class EventMysqlRepository implements EventRepositoryInterface
                 })
                 ->whereDate('start_date', '>', $today)
                 ->orderBy('start_date', 'asc')
-                ->paginate(10);
+                ->get();
 
             return $events;
         } catch(Exceptions $e) {
@@ -81,9 +99,9 @@ class EventMysqlRepository implements EventRepositoryInterface
     /**
      * getPastEvents
      *
-     * @return LengthAwarePaginator
+     * @return Collection
      */
-    public function getPastEvents(Builder $reservedPeople): LengthAwarePaginator
+    public function getPastEvents(Builder $reservedPeople): Collection
     {
         try {
             $today = Carbon::today();
@@ -93,7 +111,7 @@ class EventMysqlRepository implements EventRepositoryInterface
                 })
                 ->whereDate('start_date', '<', $today)
                 ->orderBy('start_date', 'desc')
-                ->paginate(10);
+                ->get();
 
             return $events;
         } catch(Exceptions $e) {

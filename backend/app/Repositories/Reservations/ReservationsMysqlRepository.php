@@ -23,7 +23,12 @@ class ReservationsMysqlRepository implements ReservationRepositoryInterface
     {
         $this->model = $reservation;
     }
-
+    
+    /**
+     * getReservedPeople
+     *
+     * @return Builder
+     */
     public function getReservedPeople(): Builder
     {
         try {

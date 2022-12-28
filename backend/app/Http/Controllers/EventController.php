@@ -11,7 +11,6 @@ use App\Services\EventService;
 use App\Repositories\Interfaces\EventRepositoryInterface;
 use App\Repositories\Interfaces\ReservationRepositoryInterface;
 
-
 class EventController extends Controller
 {    
     /**
@@ -52,7 +51,6 @@ class EventController extends Controller
     public function index()
     {
         $events = $this->eventService->getFutureEvents();
-        
         return view('managers.events.index', compact('events'));
     }
 
@@ -106,6 +104,7 @@ class EventController extends Controller
         $eventDate = $event->eventDate;
         $startTime = $event->startTime;
         $endTime = $event->endTime;
+        $users = $this->eventRepo->getEventUsers($event->id);
         
         return view('managers.events.show', 
             compact([
