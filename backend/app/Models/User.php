@@ -10,6 +10,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
+use App\Models\Event;
+
 class User extends Authenticatable
 {
     use HasApiTokens;
@@ -65,4 +67,10 @@ class User extends Authenticatable
         "MANAGER" => 5, 
         "USER" => 9,
     ];
+
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'reservations')
+            ->withPivot('id', 'number_of_people', 'canceled_date');
+    }
 }

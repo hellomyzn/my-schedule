@@ -112,7 +112,8 @@ class EventController extends Controller
                 'eventDate',
                 'startTime',
                 'endTime',
-                'today'
+                'today',
+                'users'
             ]));
     }
 
