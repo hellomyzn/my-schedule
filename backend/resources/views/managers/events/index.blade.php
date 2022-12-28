@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            イベント管理
+            今後のイベント一覧
         </h2>
     </x-slot>
 
@@ -38,7 +38,7 @@
                                     <td class="px-4 py-3 text-blue-500"><a href={{ route('managers.events.show', $event->id) }}>{{ $event->name }}</a></td>
                                     <td class="px-4 py-3">{{ $event->start_date }}</td>
                                     <td class="px-4 py-3">{{ $event->end_date }}</td>
-                                    <td class="px-4 py-3">人程</td>
+                                    <td class="px-4 py-3">{{ is_null($event->number_of_people) ? 0 : $event->number_of_people }}</td>
                                     <td class="px-4 py-3">{{ $event->max_people }}</td>
                                     <td class="px-4 py-3">{{ $event->is_visible }}</td>
                                 </tr>

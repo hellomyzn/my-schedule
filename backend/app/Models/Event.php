@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
+use App\Models\User;
+
 class Event extends Model
 {
     use HasFactory;
@@ -29,6 +31,12 @@ class Event extends Model
         "OPEN" => 1, 
         "CLOSE" => 0,
     ];
+
+    public function users() 
+    {
+        return $this->belongsToMany(User::class, 'reservations')
+            ->withPivot('id', 'number_of_people', 'canceled_date');
+    }
 
     /**
      * eventDate
