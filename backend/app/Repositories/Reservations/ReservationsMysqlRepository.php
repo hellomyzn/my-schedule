@@ -34,6 +34,7 @@ class ReservationsMysqlRepository implements ReservationRepositoryInterface
         try {
             $reservedPeople = DB::table('reservations')
                 ->select('event_id', DB::raw('sum(number_of_people) as number_of_people'))
+                ->whereNull('canceled_date')
                 ->groupBy('event_id');
 
             return $reservedPeople;
