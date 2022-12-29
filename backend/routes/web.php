@@ -13,12 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
-
 Route::fallback(function(){ //存在しないURLは自動的にTOPにリダイレクトさせる。
-    return redirect(route('welcome')); 
+    return to_route('login'); 
 });
 
 require __DIR__.'/auth.php';
