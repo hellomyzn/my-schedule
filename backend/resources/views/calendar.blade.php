@@ -21,8 +21,9 @@
         @livewireStyles
     </head>
     <body class="font-sans antialiased">
-       Calendar 
-       <x-jet-input id="calendar" class="block mt-1 w-full" type="text" name="calendar"/>
+       
+       
+       @livewire('calendar')
        @livewireScripts
     </body>
 </html>
