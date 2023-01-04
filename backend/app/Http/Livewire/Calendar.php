@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use Carbon\CarbonImmutable;
 
+use App\Models\Event;
 use App\Services\EventService;
 
 class Calendar extends Component
@@ -58,6 +59,15 @@ class Calendar extends Component
      * @var mixed
      */
     public $events;
+    
+    
+    /**
+     * eventsOnCalendar
+     *
+     * @var mixed
+     */
+    public $eventsOnCalendar;
+
 
     /**
      * mount
@@ -69,6 +79,7 @@ class Calendar extends Component
         $this->currentDate = CarbonImmutable::today();
         $this->seventDaysLater = $this->currentDate->addDays(7);
         $this->currentWeek = [];
+        $this->eventsOnCalendar = [];
         
         $this->events = EventService::getWeekEvents(
             $this->currentDate->format('Y-m-d'),
@@ -85,6 +96,10 @@ class Calendar extends Component
                 'dayOfWeek' => $this->dayOfWeek
             ]);
             
+            for ($j = 0; $j < 21; $j++){
+                $dateTime =  $this->currentWeek[$i]['checkDay'] . " " . Event::EVENT_TIME[$j];
+                $this->eventsOnCalendar[$i][$j] = $this->events->firstWhere('start_date', $dateTime);
+            }
         }
     }
 
@@ -109,6 +124,11 @@ class Calendar extends Component
                 'checkDay' => $this->checkDay, 
                 'dayOfWeek' => $this->dayOfWeek
             ]);
+
+            for ($j = 0; $j < 21; $j++){
+                $dateTime =  $this->currentWeek[$i]['checkDay'] . " " . Event::EVENT_TIME[$j];
+                $this->eventsOnCalendar[$i][$j] = $this->events->firstWhere('start_date', $dateTime);
+            }
         }
     }
     

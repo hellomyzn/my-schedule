@@ -54,7 +54,7 @@ class Event extends Model
         '19:00:00',
         '19:30:00',
         '20:00:00'
-    ]
+    ];
 
     public function users() 
     {

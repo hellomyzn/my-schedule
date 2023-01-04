@@ -14,8 +14,10 @@
                 <div class="py-1 px-2 border border-gray-200 text-center">{{ $currentWeek[$i]['day']}}</div>
                 <div class="py-1 px-2 border border-gray-200 text-center">{{ $currentWeek[$i]['dayOfWeek']}}</div>
                 @for($j = 0; $j < 21; $j++)
-                    @if($events->isNotEmpty())
-                        <div class="py-1 px-2 h-8 border border-gray-200"></div>
+                    @if(!is_null($eventsOnCalendar[$i][$j]))
+                        <div class="py-1 px-2 h-8 border border-gray-200 text-xs">
+                            {{ $eventsOnCalendar[$i][$j]->name }}
+                        </div>
                     @else
                         <div class="py-1 px-2 h-8 border border-gray-200"></div>
                     @endif
@@ -30,6 +32,6 @@
         @endfor
     </div>
     @foreach ($events as $event)
-        {{ $event->start_date }}
+        {{ $event->start_date }} <br>
     @endforeach
 </div>
