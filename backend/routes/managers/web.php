@@ -6,7 +6,7 @@ use App\Http\Controllers\EventController;
 
 
 Route::prefix('manager')
-    ->middleware(['can:manager-higher'])
+    ->middleware(['auth', 'can:manager-higher'])
     ->name('managers.')
     ->group(function(){
         Route::prefix('events')

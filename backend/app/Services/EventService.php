@@ -85,6 +85,32 @@ class EventService
         
         return $duplicatedEventNumber;
     }
+
+    
+    /**
+     * getWeekEvents
+     *
+     * @param  mixed $startDate
+     * @param  mixed $endDate
+     * @return Collection
+     */
+    public static function getWeekEvents(string $startDate, string $endDate): Collection
+    {
+        $reservedPeople = DB::table('reservations')
+            ->select('event_id', DB::raw('sum(number_of_people) as number_of_people'))
+            ->whereNull('canceled_date')
+            ->groupBy('event_id');
+        
+        $events = DB::table('events')
+            ->leftJoinSub($reservedPeople, 'reservedPeople', function($join){
+                $join->on('events.id', '=', 'reservedPeople.event_id');
+            })
+            ->whereBetween('events.start_date', [$startDate, $endDate])
+            ->orderBy('start_date', 'asc')
+            ->get();
+
+        return $events;
+    }
     
     /**
      * joinDateAndTime

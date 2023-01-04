@@ -2,9 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['can:user-higher'])
+use App\Http\Controllers\EventController;
+
+Route::middleware(['can:user-higher', 'auth'])
     ->group(function(){
-        Route::get('index', function() {
-            dd('user');
-        });
+        Route::get('/', function(){
+            return view('calendar');
+        })->name('calendar');
 });
