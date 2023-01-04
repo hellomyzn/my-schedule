@@ -86,7 +86,14 @@ class EventService
         return $duplicatedEventNumber;
     }
 
-
+    
+    /**
+     * getWeekEvents
+     *
+     * @param  mixed $startDate
+     * @param  mixed $endDate
+     * @return Collection
+     */
     public static function getWeekEvents(string $startDate, string $endDate): Collection
     {
         $reservedPeople = DB::table('reservations')

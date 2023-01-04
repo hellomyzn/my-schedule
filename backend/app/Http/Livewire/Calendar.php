@@ -68,6 +68,23 @@ class Calendar extends Component
      */
     public $eventsOnCalendar;
 
+    
+    /**
+     * countTimeBoxes
+     *
+     * @param  mixed $reserved_event
+     * @return int
+     */
+    protected function countTimeBoxes(object $reserved_event): int
+    {
+        $s_date = $reserved_event->start_date;
+        $e_date = $reserved_event->end_date;
+        $diff = CarbonImmutable::parse($s_date)->diffInMinutes($e_date);
+        $interval = 30;                    
+        $timeBoxes =  $diff / $interval - 1;
+
+        return $timeBoxes;
+    }
 
     /**
      * mount
@@ -87,19 +104,32 @@ class Calendar extends Component
         );
 
         for ($i = 0; $i < 7; $i++){
-            $this->day = $this->currentDate->addDays($i)->format('m月d日');
-            $this->checkDay = $this->currentDate->addDays($i)->format('Y-m-d');
+            $this->date_jp = $this->currentDate->addDays($i)->format('m月d日');
+            $this->date = $this->currentDate->addDays($i)->format('Y-m-d');
             $this->dayOfWeek = $this->currentDate->addDays($i)->dayName;
             array_push($this->currentWeek, [
-                'day' => $this->day, 
-                'checkDay' => $this->checkDay, 
+                'date_jp' => $this->date_jp, 
+                'date' => $this->date, 
                 'dayOfWeek' => $this->dayOfWeek
             ]);
             
             for ($j = 0; $j < 21; $j++){
-                $dateTime =  $this->currentWeek[$i]['checkDay'] . " " . Event::EVENT_TIME[$j];
-                $this->eventsOnCalendar[$i][$j] = $this->events->firstWhere('start_date', $dateTime);
-            }
+                $dateTime =  $this->date . " " . Event::EVENT_TIME[$j];
+                // return ObjectSTD object or Null
+                $reserved_event = $this->events->firstWhere('start_date', $dateTime);
+                $this->eventsOnCalendar[$i][$j] = $reserved_event;
+
+                // If reserved events are more thant 30 mins
+                if (!is_null($reserved_event)){
+                    $timeBoxes = $this->countTimeBoxes($reserved_event);
+                    if ($timeBoxes > 0){
+                        for ($k = 1; $k <= $timeBoxes; $k++){
+                            $this->eventsOnCalendar[$i][$j+$k] = "reserved";
+                        }
+                    }
+                    $j += $timeBoxes;
+                }
+            }   
         }
     }
 
@@ -116,19 +146,32 @@ class Calendar extends Component
         
         for ($i = 0; $i < 7; $i++){
             
-            $this->day = CarbonImmutable::parse($this->currentDate)->addDays($i)->format('m月d日');
-            $this->checkDay = CarbonImmutable::parse($this->currentDate)->addDays($i)->format('Y-m-d');
+            $this->date_jp = CarbonImmutable::parse($this->currentDate)->addDays($i)->format('m月d日');
+            $this->date = CarbonImmutable::parse($this->currentDate)->addDays($i)->format('Y-m-d');
             $this->dayOfWeek = CarbonImmutable::parse($this->currentDate)->addDays($i)->dayName;
             array_push($this->currentWeek, [
-                'day' => $this->day, 
-                'checkDay' => $this->checkDay, 
+                'date_jp' => $this->date_jp, 
+                'date' => $this->date, 
                 'dayOfWeek' => $this->dayOfWeek
             ]);
 
             for ($j = 0; $j < 21; $j++){
-                $dateTime =  $this->currentWeek[$i]['checkDay'] . " " . Event::EVENT_TIME[$j];
-                $this->eventsOnCalendar[$i][$j] = $this->events->firstWhere('start_date', $dateTime);
-            }
+                $dateTime =  $this->date . " " . Event::EVENT_TIME[$j];
+                // return ObjectSTD object or Null
+                $reserved_event = $this->events->firstWhere('start_date', $dateTime);
+                $this->eventsOnCalendar[$i][$j] = $reserved_event;
+
+                // If reserved events are more thant 30 mins
+                if (!is_null($reserved_event)){
+                    $timeBoxes = $this->countTimeBoxes($reserved_event);
+                    if ($timeBoxes > 0){
+                        for ($k = 1; $k <= $timeBoxes; $k++){
+                            $this->eventsOnCalendar[$i][$j+$k] = "reserved";
+                        }
+                    }
+                    $j += $timeBoxes;
+                }
+            }   
         }
     }
     
