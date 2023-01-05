@@ -19,9 +19,12 @@
                 @for($j = 0; $j < 21; $j++)
                     {{-- event exsists --}}
                     @if(!is_null($eventsOnCalendar[$i][$j]))
+                        
                         <div class="py-1 px-2 h-8 border border-gray-200 text-xs bg-blue-100">
                             @if($eventsOnCalendar[$i][$j] !== "reserved")
-                                {{ $eventsOnCalendar[$i][$j]->name }}
+                                <a href={{ route('events.detail', [$eventsOnCalendar[$i][$j]->id] ) }}>
+                                    {{ $eventsOnCalendar[$i][$j]->name }}
+                                </a>
                             @endif
                         </div>
                     {{-- event empty --}}
