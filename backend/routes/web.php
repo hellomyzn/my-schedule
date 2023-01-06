@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::fallback(function(){ //存在しないURLは自動的にTOPにリダイレクトさせる。
-    return to_route('login'); 
+    return to_route('dashboard'); 
 });
 
 require __DIR__.'/auth.php';
