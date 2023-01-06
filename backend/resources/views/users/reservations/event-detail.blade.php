@@ -17,8 +17,8 @@
                         </div>
                     @endif
             
-                    <form method="get" action="{{ route('managers.events.edit', $event->id) }}">
-            
+                    <form method="post" action="{{ route('events.reserve', $event->id) }}">
+                        @csrf
                         <div>
                             <x-jet-label for="event_name" value="イベント名" />
                             {{ $event->name }}
@@ -58,6 +58,7 @@
                                     @endfor
                                 </select>
                             </div>
+                            <input type="hidden" name="id" value={{ $event->id }}>
                             <x-jet-button class="ml-4">
                                 予約する
                             </x-jet-button>

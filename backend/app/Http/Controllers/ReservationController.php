@@ -4,17 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Repositories\Interfaces\ReservationRepositoryInterface;
 use App\Models\Event;
+use App\Models\Reservation;
+use App\Services\ReservationService;
 
 class ReservationController extends Controller
 {
     /**
      * eventRepo
      *
-     * @var EventRepositoryInterface
+     * @var ReservationService
      */
-    protected $reservationRepo;
+    protected $reservationService;
 
     /**
      * __construct
@@ -22,14 +23,11 @@ class ReservationController extends Controller
      * @param  ReservationRepositoryInterface
      * @return void
      */
-    public function __construct(
-        ReservationRepositoryInterface $reservationRepository
-    )
+    public function __construct(ReservationService $reservationService)
     {
-        $this->reservationRepo = $reservationRepository;
+        $this->reservationService = $reservationService;
     }
-
-
+    
     public function dashboard()
     {
         return view('users.reservations.dashboard');
@@ -41,18 +39,8 @@ class ReservationController extends Controller
         $eventDate = $event->eventDate;
         $startTime = $event->startTime;
         $endTime = $event->endTime;
-
-        $reservedPeople = $this->reservationRepo->getReservedPeople();
-        $reservedPeople = $reservedPeople->having('event_id', $event->id)->first();
-
-        if(!is_null($reservedPeople)){
-            $reservablePeople = $event->max_people - $reservedPeople->number_of_people;
-        } else {
-            $reservablePeople = $event->max_people; 
-        }
+        $reservablePeople = $this->reservationService->getNumReservablePeople($event);
         
-        
-
         return view('users.reservations.event-detail', 
             compact([
                 'event', 
@@ -61,5 +49,21 @@ class ReservationController extends Controller
                 'endTime',
                 'reservablePeople'
             ]));
+    }
+
+    public function reserve(Request $request)
+    {
+        $event = Event::findOrFail($request->id);
+        $numReservablePeople = $this->reservationService->getNumReservedPeople($event);
+        $reservedPeopleAndRequestNumber = $numReservablePeople + $request->reservablePeople;
+
+        if($event->max_people >= $reservedPeopleAndRequestNumber ){
+            $this->reservationService->create($request);
+            session()->flash('status', '予約が完了しました。');
+            return to_route('dashboard');
+        } else{
+            session()->flash('status', 'この人数は予約できません。');
+            return to_route('dashboard');
+        }
     }
 }
