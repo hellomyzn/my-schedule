@@ -4,10 +4,10 @@ namespace App\Services;
 
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Repositories\Interfaces\ReservationRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 
 class ReservationService
 {    
@@ -17,6 +17,13 @@ class ReservationService
      * @var EventRepositoryInterface
      */
     protected $reservationRepo;
+    
+    /**
+     * userRepo
+     *
+     * @var UserRepositoryInterface
+     */
+    protected $userRepo;
 
     /**
      * __construct
@@ -24,9 +31,13 @@ class ReservationService
      * @param  ReservationRepositoryInterface
      * @return void
      */
-    public function __construct(ReservationRepositoryInterface $reservationRepository)
+    public function __construct(
+        ReservationRepositoryInterface $reservationRepository,
+        UserRepositoryInterface $userRepository
+    )
     {
         $this->reservationRepo = $reservationRepository;
+        $this->userRepo = $userRepository;
     }
 
     
@@ -103,7 +114,7 @@ class ReservationService
     public function create(Request $request): Model
     {
         $requestData = [
-            'user_id' => Auth::id(),
+            'user_id' => $this->userRepo->getAuthUser()->id,
             'event_id' => $request->event,
             'number_of_people' => $request->reservablePeople,
         ];

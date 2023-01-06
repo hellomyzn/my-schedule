@@ -71,7 +71,6 @@ class ReservationController extends Controller
      */
     public function reserve(ReserveRequest $request, $id)
     {
-        dd($request->reservablePeople);
         $event = Event::findOrFail($id);
         $numReservablePeople = $this->reservationService->getNumReservedPeople($id);
         $reservedPeopleAndRequestNumber = $numReservablePeople + $request->reservablePeople;
