@@ -26,6 +26,24 @@ class ReservationsMysqlRepository implements ReservationRepositoryInterface
         $this->model = $reservation;
     }
     
+    public function getReservationByUserIdAndEventId(int $user_id, int $event_id)
+    {
+        try {
+            $reservation = $this->model->where('user_id', '=', $user_id)
+                ->where('event_id', '=', $event_id)
+                ->first();
+
+            return $reservation;
+        } catch(Exceptions $e) {
+            \Log::error(__METHOD__.'@'.$e->getLine().': '.$e->getMessage());
+
+            return [
+                'msg' => $e->getMessage(),
+                'err' => false,
+            ];
+        }
+    }
+
     /**
      * getReservedPeople
      *

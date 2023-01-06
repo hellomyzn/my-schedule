@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Carbon\Carbon;
+
 use App\Models\User;
 use App\Models\Event;
 use App\Models\Reservation;
 use App\Services\eventService;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Repositories\Interfaces\EventRepositoryInterface;
+use App\Repositories\Interfaces\ReservationRepositoryInterface;
 
 class MyPageController extends Controller
 {   
@@ -25,6 +29,25 @@ class MyPageController extends Controller
      * @var UserRepositoryInterface
      */
     protected $userRepo;
+    
+    /**
+     * eventRepo
+     *
+     * @var EventRepositoryInterface
+     */    
+    /**
+     * eventRepo
+     *
+     * @var mixed
+     */
+    protected $eventRepo;
+    
+    /**
+     * reservationRepo
+     *
+     * @var ReservationRepositoryInterface
+     */
+    protected $reservationRepo;
 
     /**
      * __construct
@@ -34,11 +57,15 @@ class MyPageController extends Controller
      */
     public function __construct(
         eventService $eventService,
-        UserRepositoryInterface $userRepo
+        UserRepositoryInterface $userRepository,
+        EventRepositoryInterface $eventRepository,
+        ReservationRepositoryInterface $reservationRepository
     )
     {
         $this->eventService = $eventService;
-        $this->userRepo = $userRepo;
+        $this->userRepo = $userRepository;
+        $this->eventRepo = $eventRepository;
+        $this->reservationRepo = $reservationRepository;
     }
         
     /**
@@ -64,8 +91,23 @@ class MyPageController extends Controller
      *
      * @return void
      */
-    public function show()
+    public function show($id)
     {
-        
+        $event = $this->eventRepo->getById($id);
+        $eventDate = $event->eventDate;
+        $startTime = $event->startTime;
+        $endTime = $event->endTime;
+        $today = Carbon::today()->format('Y年m月d日');
+        $user = $this->userRepo->getAuthUser();
+        $reservation = $this->reservationRepo->getReservationByUserIdAndEventId($user->id, $event->id);
+
+        return view('users.mypages.show', compact([
+            'event',
+            'reservation',
+            'eventDate',
+            'startTime',
+            'endTime',
+            'today'
+        ]));
     }
 }
