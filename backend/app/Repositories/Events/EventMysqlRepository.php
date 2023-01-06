@@ -7,7 +7,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\Query\Builder;
 use Carbon\Carbon;
 
-
 use App\Models\Event;
 use Illuminate\Database\Eloquent\Model;
 

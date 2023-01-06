@@ -29,7 +29,13 @@ class ReservationService
         $this->reservationRepo = $reservationRepository;
     }
 
-
+    
+    /**
+     * createReservationArrayByUsers
+     *
+     * @param  mixed $users
+     * @return array
+     */
     public static function createReservationArrayByUsers(Collection $users): array
     {
         $reservations = [];

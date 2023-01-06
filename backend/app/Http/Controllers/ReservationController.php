@@ -27,12 +27,23 @@ class ReservationController extends Controller
     {
         $this->reservationService = $reservationService;
     }
-    
+        
+    /**
+     * dashboard
+     *
+     * @return void
+     */
     public function dashboard()
     {
         return view('users.reservations.dashboard');
     }
-
+    
+    /**
+     * detail
+     *
+     * @param  mixed $id
+     * @return void
+     */
     public function detail($id)
     {
         $event = Event::findOrFail($id);
@@ -50,7 +61,13 @@ class ReservationController extends Controller
                 'reservablePeople'
             ]));
     }
-
+    
+    /**
+     * reserve
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function reserve(Request $request)
     {
         $event = Event::findOrFail($request->id);

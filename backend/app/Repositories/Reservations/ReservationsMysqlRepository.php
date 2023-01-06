@@ -76,7 +76,13 @@ class ReservationsMysqlRepository implements ReservationRepositoryInterface
             ];
         }
     }
-
+    
+    /**
+     * create
+     *
+     * @param  array $requestData
+     * @return Model
+     */
     public function create(array $requestData): Model
     {
         try {
