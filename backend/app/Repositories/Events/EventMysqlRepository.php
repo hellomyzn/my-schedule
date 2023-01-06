@@ -5,10 +5,11 @@ namespace App\Repositories\Events;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
 use App\Models\Event;
-use Illuminate\Database\Eloquent\Model;
+;
 
 use App\Repositories\Interfaces\EventRepositoryInterface;
 use App\Repositories\Interfaces\ReservationRepositoryInterface;

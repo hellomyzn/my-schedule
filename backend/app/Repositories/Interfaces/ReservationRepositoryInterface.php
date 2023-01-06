@@ -2,9 +2,6 @@
 
 namespace App\Repositories\Interfaces;
 
-use Illuminate\Database\Query\Builder;
-use \stdClass;
-
 interface ReservationRepositoryInterface
 {
     public function getReservedPeople();

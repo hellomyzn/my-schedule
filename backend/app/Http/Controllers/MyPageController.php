@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
+use App\Models\Event;
+use App\Models\Reservation;
 use App\Services\eventService;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 
 class MyPageController extends Controller
 {   
@@ -16,6 +18,13 @@ class MyPageController extends Controller
      * @var eventService
      */
     protected $eventService;
+    
+    /**
+     * userRepo
+     *
+     * @var UserRepositoryInterface
+     */
+    protected $userRepo;
 
     /**
      * __construct
@@ -23,9 +32,13 @@ class MyPageController extends Controller
      * @param  MyPageService
      * @return void
      */
-    public function __construct(eventService $eventService)
+    public function __construct(
+        eventService $eventService,
+        UserRepositoryInterface $userRepo
+    )
     {
         $this->eventService = $eventService;
+        $this->userRepo = $userRepo;
     }
         
     /**
@@ -35,7 +48,7 @@ class MyPageController extends Controller
      */
     public function index()
     {
-        $user = User::findOrFail(Auth::id());
+        $user = $this->userRepo->getAuthUser();
         $events = $user->events;
         $eventsFromToday = $this->eventService->getEventsFromToday($events);
         $pastEvents = $this->eventService->getPastEventsByUser($events);
@@ -44,5 +57,15 @@ class MyPageController extends Controller
             'eventsFromToday',
             'pastEvents'
         ]));
+    }
+    
+    /**
+     * show
+     *
+     * @return void
+     */
+    public function show()
+    {
+        
     }
 }

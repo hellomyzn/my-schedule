@@ -156,13 +156,21 @@ class EventService
 
         return $paginatedEvents;
     }
-
-    public function getPastEventsByUser($events)
+    
+    /**
+     * getPastEventsByUser
+     *
+     * @param  Collection $events
+     * @return array
+     */
+    public function getPastEventsByUser(Collection $events): array
     {
         $reservedEvents = [];
-        foreach($events->sortByDesc('start_date') as $event){
-            if(is_null($event->pivot->canceled_date) &&
-            $event->start_date < Carbon::now()->format('Y-m-d 00:00:00'))
+        $sortedEvents = $events->sortByDesc('start_date');
+        $today = Carbon::today()->format('Y-m-d 00:00:00');
+
+        foreach($sortedEvents as $event){
+            if(is_null($event->pivot->canceled_date) && $event->start_date < $today)
             {
                 $eventInfo = [
                     'id' => $event->id,
@@ -178,13 +186,21 @@ class EventService
         }
         return $reservedEvents;        
     }
-
-    public function getEventsFromToday($events)
+    
+    /**
+     * getEventsFromToday
+     *
+     * @param  Collection $events
+     * @return array
+     */
+    public function getEventsFromToday(Collection $events): array
     {
         $reservedEvents = [];
-        foreach($events->sortBy('start_date') as $event){
-            if(is_null($event->pivot->canceled_date) &&
-                $event->start_date >= Carbon::now()->format('Y-m-d 00:00:00'))
+        $sortedEvents = $events->sortBy('start_date');
+        $today = Carbon::today()->format('Y-m-d 00:00:00');
+
+        foreach($sortedEvents as $event){
+            if(is_null($event->pivot->canceled_date) && $event->start_date >= $today)
             {
                 $eventInfo = [
                     'id' => $event->id,
@@ -201,8 +217,6 @@ class EventService
 
         return $reservedEvents;
     }
-
-
 
     /**
      * create
