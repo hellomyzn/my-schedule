@@ -91,9 +91,9 @@ class MyPageController extends Controller
      *
      * @return void
      */
-    public function show($id)
+    public function show(Event $event)
     {
-        $event = $this->eventRepo->getById($id);
+        $event = $this->eventRepo->getById($event->id);
         $eventDate = $event->eventDate;
         $startTime = $event->startTime;
         $endTime = $event->endTime;
@@ -109,5 +109,10 @@ class MyPageController extends Controller
             'endTime',
             'today'
         ]));
+    }
+
+    public function cancel(Event $event)
+    {
+        dd($event);
     }
 }

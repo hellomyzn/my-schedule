@@ -28,7 +28,8 @@ Route::middleware(['can:user-higher', 'auth'])
             ->controller(MyPageController::class)
             ->group(function() {
                 Route::get('/', 'index')->name('index');
-                Route::get('/{mypage}', 'show')->name('show');
+                Route::get('/{event}', 'show')->name('show');
+                Route::post('/{event}', 'cancel')->name('cancel');
             });
         
 });
