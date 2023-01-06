@@ -11,7 +11,16 @@ Route::middleware(['can:user-higher', 'auth'])
             return view('calendar');
         })->name('calendar');
 
-        Route::get('/dashboard', [ReservationController::class, 'dashboard'])->name('dashboard');
-        Route::get('/{id}', [ReservationController::class, 'detail'])->name('events.detail');
-        Route::post('/{id}', [ReservationController::class, 'reserve'])->name('events.reserve');
+        Route::controller(ReservationController::class)
+            ->group(function(){
+                Route::get('/dashboard', 'dashboard')->name('dashboard');
+
+                Route::prefix('events')
+                    ->name('events.')
+                    ->group(function() {
+                        Route::get('/{event}', 'detail')->name('detail');
+                        Route::post('/{event}', 'reserve')->name('reserve');
+                    });
+            });
+
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Requests\ReserveRequest;
 use App\Models\Event;
 use App\Models\Reservation;
 use App\Services\ReservationService;
@@ -68,10 +69,11 @@ class ReservationController extends Controller
      * @param  mixed $request
      * @return void
      */
-    public function reserve(Request $request)
+    public function reserve(ReserveRequest $request, $id)
     {
-        $event = Event::findOrFail($request->id);
-        $numReservablePeople = $this->reservationService->getNumReservedPeople($event);
+        dd($request->reservablePeople);
+        $event = Event::findOrFail($id);
+        $numReservablePeople = $this->reservationService->getNumReservedPeople($id);
         $reservedPeopleAndRequestNumber = $numReservablePeople + $request->reservablePeople;
 
         if($event->max_people >= $reservedPeopleAndRequestNumber ){

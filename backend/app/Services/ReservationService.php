@@ -80,12 +80,12 @@ class ReservationService
     /**
      * getNumReservedPeople
      *
-     * @param  Event $event
+     * @param  int $event id
      * @return int
      */
-    public function getNumReservedPeople(object $event): int
+    public function getNumReservedPeople(int $id): int
     {
-        $reservedPeople = $this->reservationRepo->getFirstReservedPeopleByEventId($event->id);
+        $reservedPeople = $this->reservationRepo->getFirstReservedPeopleByEventId($id);
         if (is_null($reservedPeople)){
             return 0;
         } else {
@@ -104,7 +104,7 @@ class ReservationService
     {
         $requestData = [
             'user_id' => Auth::id(),
-            'event_id' => $request->id,
+            'event_id' => $request->event,
             'number_of_people' => $request->reservablePeople,
         ];
 
