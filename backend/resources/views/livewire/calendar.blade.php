@@ -7,7 +7,7 @@
     value="{{ $currentDate }}"
     wire:change="getDate($event.target.value)" />
 
-    <div class="flex border border-green-400 mx-auto">
+    <div class="flex border mx-auto">
         <x-calendar-time />
         {{-- week --}}
         @for($i = 0; $i < 7; $i++)
