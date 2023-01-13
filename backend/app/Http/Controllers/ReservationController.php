@@ -8,6 +8,8 @@ use App\Http\Requests\ReserveRequest;
 use App\Models\Event;
 use App\Models\Reservation;
 use App\Services\ReservationService;
+use App\Repositories\Interfaces\ReservationRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 
 class ReservationController extends Controller
 {
@@ -17,16 +19,29 @@ class ReservationController extends Controller
      * @var ReservationService
      */
     protected $reservationService;
+    
+    /**
+     * reservationRepo
+     *
+     * @var ReservationRepositoryInterface
+     */
+    protected $reservationRepo;
 
     /**
      * __construct
      *
-     * @param  ReservationRepositoryInterface
      * @return void
      */
-    public function __construct(ReservationService $reservationService)
+    public function __construct(
+        ReservationService $reservationService,
+        ReservationRepositoryInterface $reservationRepository,
+        UserRepositoryInterface $userRepository,
+        
+    )
     {
         $this->reservationService = $reservationService;
+        $this->reservationRepo = $reservationRepository;
+        $this->userRepo = $userRepository;
     }
         
     /**
@@ -52,6 +67,8 @@ class ReservationController extends Controller
         $startTime = $event->startTime;
         $endTime = $event->endTime;
         $reservablePeople = $this->reservationService->getNumReservablePeople($event);
+        $user = $this->userRepo->getAuthUser();
+        $isReserved = $this->reservationRepo->isReserved($user->id, $event->id);
         
         return view('users.reservations.event-detail', 
             compact([
@@ -59,7 +76,8 @@ class ReservationController extends Controller
                 'eventDate',
                 'startTime',
                 'endTime',
-                'reservablePeople'
+                'reservablePeople',
+                'isReserved'
             ]));
     }
     

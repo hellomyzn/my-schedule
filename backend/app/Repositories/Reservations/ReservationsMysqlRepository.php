@@ -38,6 +38,7 @@ class ReservationsMysqlRepository implements ReservationRepositoryInterface
         try {
             $reservation = $this->model->where('user_id', '=', $user_id)
                 ->where('event_id', '=', $event_id)
+                ->latest()
                 ->first();
 
             return $reservation;
@@ -143,6 +144,33 @@ class ReservationsMysqlRepository implements ReservationRepositoryInterface
             return $reservation;
 
         } catch(Exceptions $e) {
+            \Log::error(__METHOD__.'@'.$e->getLine().': '.$e->getMessage());
+
+            return [
+                'msg' => $e->getMessage(),
+                'err' => false,
+            ];
+        }
+    }
+    
+    /**
+     * isReserved
+     *
+     * @param  int $user_id
+     * @param  int $event_id
+     * @return Model or False
+     */
+    public function isReserved(int $user_id, int $event_id): ?Model
+    {
+        try {
+            $isReserved = $this->model->where('user_id', '=', $user_id )
+            ->where('event_id', '=', $event_id)
+            ->whereNull('canceled_date')
+            ->latest()
+            ->first();
+
+            return $isReserved;
+        } catch(Exception $e) {
             \Log::error(__METHOD__.'@'.$e->getLine().': '.$e->getMessage());
 
             return [
