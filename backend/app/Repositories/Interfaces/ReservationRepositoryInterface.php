@@ -2,9 +2,11 @@
 
 namespace App\Repositories\Interfaces;
 
-use Illuminate\Database\Query\Builder;
-
 interface ReservationRepositoryInterface
 {
-    public function getReservedPeople(): Builder;
+    public function getReservationByUserIdAndEventId(int $user_id, int $event_id);
+    public function getReservedPeople();
+    public function getFirstReservedPeopleByEventId(int $event_id);
+    public function create(array $requestData);
+    public function cancel(int $id);
 }

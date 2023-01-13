@@ -156,6 +156,67 @@ class EventService
 
         return $paginatedEvents;
     }
+    
+    /**
+     * getPastEventsByUser
+     *
+     * @param  Collection $events
+     * @return array
+     */
+    public function getPastEventsByUser(Collection $events): array
+    {
+        $reservedEvents = [];
+        $sortedEvents = $events->sortByDesc('start_date');
+        $today = Carbon::today()->format('Y-m-d 00:00:00');
+
+        foreach($sortedEvents as $event){
+            if(is_null($event->pivot->canceled_date) && $event->start_date < $today)
+            {
+                $eventInfo = [
+                    'id' => $event->id,
+                    'name' => $event->name,
+                    'start_date' => $event->start_date,
+                    'end_date' => $event->end_date,
+                    'number_of_people' => $event->pivot->number_of_people,
+
+                ];
+
+                array_push($reservedEvents, $eventInfo);
+            }
+        }
+        return $reservedEvents;        
+    }
+    
+    /**
+     * getEventsFromToday
+     *
+     * @param  Collection $events
+     * @return array
+     */
+    public function getEventsFromToday(Collection $events): array
+    {
+        $reservedEvents = [];
+        $sortedEvents = $events->sortBy('start_date');
+        $today = Carbon::today()->format('Y-m-d 00:00:00');
+
+        foreach($sortedEvents as $event){
+            if(is_null($event->pivot->canceled_date) && $event->start_date >= $today)
+            {
+                $eventInfo = [
+                    'id' => $event->id,
+                    'name' => $event->name,
+                    'start_date' => $event->start_date,
+                    'end_date' => $event->end_date,
+                    'number_of_people' => $event->pivot->number_of_people,
+
+                ];
+
+                array_push($reservedEvents, $eventInfo);
+            }
+        }
+
+        return $reservedEvents;
+    }
 
     /**
      * create
