@@ -113,6 +113,11 @@ class MyPageController extends Controller
 
     public function cancel(Event $event)
     {
-        dd($event);
+        $user = $this->userRepo->getAuthUser();
+        $reservation = $this->reservationRepo->getReservationByUserIdAndEventId($user->id, $event->id);
+        $this->reservationRepo->cancel($reservation->id);
+        
+        session()->flash('status', '予約がキャンセルされました。');
+        return to_route('dashboard');
     }
 }

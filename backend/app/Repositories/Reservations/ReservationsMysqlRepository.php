@@ -25,8 +25,15 @@ class ReservationsMysqlRepository implements ReservationRepositoryInterface
     {
         $this->model = $reservation;
     }
-    
-    public function getReservationByUserIdAndEventId(int $user_id, int $event_id)
+        
+    /**
+     * getReservationByUserIdAndEventId
+     *
+     * @param  mixed $user_id
+     * @param  mixed $event_id
+     * @return Model
+     */
+    public function getReservationByUserIdAndEventId(int $user_id, int $event_id): Model
     {
         try {
             $reservation = $this->model->where('user_id', '=', $user_id)
@@ -109,6 +116,32 @@ class ReservationsMysqlRepository implements ReservationRepositoryInterface
 
                 return $reservation;
             });
+        } catch(Exceptions $e) {
+            \Log::error(__METHOD__.'@'.$e->getLine().': '.$e->getMessage());
+
+            return [
+                'msg' => $e->getMessage(),
+                'err' => false,
+            ];
+        }
+    }
+    
+    /**
+     * cancel
+     *
+     * @param  mixed $id
+     * @return Model
+     */
+    public function cancel(int $id): Model
+    {
+        try {
+            $reservation = $this->model->findOrFail($id);
+            $today = Carbon::now()->format('Y-m-d H:i:s');
+            $reservation->canceled_date = $today;
+            $reservation->save();
+
+            return $reservation;
+
         } catch(Exceptions $e) {
             \Log::error(__METHOD__.'@'.$e->getLine().': '.$e->getMessage());
 
