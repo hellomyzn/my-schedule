@@ -50,6 +50,12 @@ logs:
 	docker-compose logs
 logs-watch:
 	docker-compose logs --follow
+logs-app:
+	docker compose logs -f app
+logs-db:
+	docker compose exec db tail -100 /var/lib/mysql/mysql-general.log
+logs-db-error:
+	docker compose exec db tail -100 /var/lib/mysql/mysql-error.log
 web:
 	docker-compose exec web ash
 app:
